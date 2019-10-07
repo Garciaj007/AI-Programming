@@ -1,36 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Chaser2 : MonoBehaviour {
-    public GameObject target;
-    public float speed;
-    public float maxAngularSpeed;
+    public GameObject target = null;
+    public float maxSpeed = 10f;
+    public float maxAngularSpeed = 90f;
+    public float arrivalDistance = 10f;
 
-    Vector3 orientation = Vector3.up;
+    private Rigidbody2D rigid = null;
+    private Vector3 orientation = Vector3.zero;
 
-    // Use this for initialization
-    void Start () {
-        
-    }
-	
-	// Update is called once per frame
-	void Update () {
-
-        // To do: Complete Update() to chase the targe with the angular speed limit (maxAngularSpeed)
-        // * recommended steps: 
-        // 1. implement the chasing that you did in Lab3.1
-        // 2. limit the rotation (orientation). The rotation angle cannot be over the max angle based on maxAngularSpeed.
-        orientation = (target.transform.position - transform.position).normalized;
-        transform.position += orientation * speed * Time.deltaTime;
-
-        var maxAngle = maxAngularSpeed * Time.deltaTime; 
-        var desiredAngle = -Mathf.Atan2(orientation.x, orientation.y) * Mathf.Rad2Deg;
-    }
-
-    void UpdateOrientation()
+    private void Start()
     {
-        Vector3 angle = new Vector3(0, 0, -Mathf.Atan2(orientation.x, orientation.y) * Mathf.Rad2Deg);
+        rigid = GetComponent<Rigidbody2D>();
+    }
+
+    //I Dont know if my math is wrong but I was using some different ways to achieve the same goal, pls note where I went
+    //wrong in the other Method, Also which method is better/less taxing...
+    void Update()
+    {
+        //Reynolds Method 
+        var desired = (target.transform.position - transform.position).normalized * maxSpeed;
+        
+        //Arrival Behaviour
+        desired = desired.magnitude < arrivalDistance ? 
+            desired * Utils.Mathf.Map(desired.magnitude, 0, arrivalDistance, 0, maxSpeed) : 
+            desired * maxSpeed;
+
+        var steering = desired - new Vector3(rigid.velocity.x, rigid.velocity.y);
+        steering = Vector3.ClampMagnitude(steering, maxAngularSpeed);
+        rigid.AddForce(steering);
+        UpdateOrientation(rigid.velocity.x, rigid.velocity.y);
+
+        //In Class Way
+        //var desired = (target.transform.position - transform.position);
+        //var heading = transform.up;
+        //var anglebetween = Mathf.Acos(Vector3.Dot(desired, heading) / (desired.magnitude * heading.magnitude));
+        //var maxAngle = maxAngularSpeed * Time.deltaTime;
+
+        //if (anglebetween < maxAngle)
+        //{
+        //    orientation = desired.normalized;
+        //} else
+        //{
+        //    orientation = 
+        //        new Vector3(
+        //            heading.x * Mathf.Cos(maxAngle) - heading.y * Mathf.Sin(maxAngle), 
+        //            heading.x * Mathf.Sin(maxAngle) + heading.y * Mathf.Cos(maxAngle))
+        //            .normalized;
+        //}
+
+        //UpdateOrientation(orientation.x, orientation.y);
+        //transform.position += orientation * maxSpeed * Time.deltaTime;
+    }
+
+    void UpdateOrientation(float x, float y)
+    {
+        Vector3 angle = new Vector3(0, 0, -Mathf.Atan2(x, y) * Mathf.Rad2Deg);
         transform.eulerAngles = angle;
     }
 }
