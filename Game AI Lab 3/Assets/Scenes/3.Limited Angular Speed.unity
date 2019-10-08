@@ -253,9 +253,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1065964940}
-  maxSpeed: 50
-  maxAngularSpeed: 20
-  arrivalDistance: 5
+  maxSpeed: 5
+  maxAngularSpeed: 40
+  arrivalDistance: 0
 --- !u!212 &759474997
 SpriteRenderer:
   m_ObjectHideFlags: 0

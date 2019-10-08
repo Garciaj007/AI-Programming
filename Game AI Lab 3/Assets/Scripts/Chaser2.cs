@@ -7,7 +7,7 @@ public class Chaser2 : MonoBehaviour {
     public float arrivalDistance = 10f;
 
     private Rigidbody2D rigid = null;
-    private Vector3 orientation = Vector3.zero;
+    private Vector3 orientation = Vector3.up;
 
     private void Start()
     {
@@ -20,7 +20,7 @@ public class Chaser2 : MonoBehaviour {
     {
         //Reynolds Method 
         var desired = (target.transform.position - transform.position).normalized * maxSpeed;
-        
+
         //Arrival Behaviour
         desired = desired.magnitude < arrivalDistance ? 
             desired * Utils.Mathf.Map(desired.magnitude, 0, arrivalDistance, 0, maxSpeed) : 
@@ -33,22 +33,23 @@ public class Chaser2 : MonoBehaviour {
 
         //In Class Way
         //var desired = (target.transform.position - transform.position);
-        //var heading = transform.up;
-        //var anglebetween = Mathf.Acos(Vector3.Dot(desired, heading) / (desired.magnitude * heading.magnitude));
-        //var maxAngle = maxAngularSpeed * Time.deltaTime;
-
+        //var anglebetween = Mathf.Acos(Vector3.Dot(desired, orientation) / (desired.magnitude * orientation.magnitude)) * Mathf.Rad2Deg;
+        //var maxAngle = maxAngularSpeed * Time.deltaTime * Mathf.Rad2Deg;
+        //
+        //Debug.Log(maxAngle);
+        //
         //if (anglebetween < maxAngle)
         //{
         //    orientation = desired.normalized;
-        //} else
-        //{
-        //    orientation = 
-        //        new Vector3(
-        //            heading.x * Mathf.Cos(maxAngle) - heading.y * Mathf.Sin(maxAngle), 
-        //            heading.x * Mathf.Sin(maxAngle) + heading.y * Mathf.Cos(maxAngle))
-        //            .normalized;
         //}
-
+        //else
+        //{
+        //    orientation =
+        //        new Vector3(
+        //            orientation.x * Mathf.Cos(maxAngle) - orientation.y * Mathf.Sin(maxAngle),
+        //            orientation.x * Mathf.Sin(maxAngle) + orientation.y * Mathf.Cos(maxAngle));
+        //}
+        //
         //UpdateOrientation(orientation.x, orientation.y);
         //transform.position += orientation * maxSpeed * Time.deltaTime;
     }
