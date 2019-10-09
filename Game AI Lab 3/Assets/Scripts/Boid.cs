@@ -106,16 +106,20 @@ public class Boid : MonoBehaviour {
             if ((d > 0) && (d < neighborDistance))
             {
                 // To do : Calculate the sum of all the velocities of the boids                
-              
+                sum += other.GetComponent<Boid>().velocity;
                 count++;
             }
+
+
         }
 
         if (count > 0)
         {
             // To do: Implement Rynolds: Steering = Desired - Velocity
             // The magnitude of steer should not be greater than maxForce
-            
+            sum = sum.normalized * maxSpeed;
+            steer = (sum - velocity);
+            steer = steer.magnitude > maxForce ? steer.normalized * maxForce : steer;
         }
 
         return steer;
@@ -135,7 +139,7 @@ public class Boid : MonoBehaviour {
             if ((d>0) && (d<neighborDistance))
             {
                 // To do : Calculate the sum of all the positions of the boids    
-                
+                sum += other.transform.position;
                 count++;
             }
         }
@@ -144,7 +148,8 @@ public class Boid : MonoBehaviour {
         {
             Vector3 averagePos = Vector3.zero;
             // To do: Calculate the average position and steer toward the position
-            
+            averagePos = sum / count;
+            return Seek(averagePos);
         }
         
         return Vector3.zero;        
