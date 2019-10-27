@@ -110,7 +110,6 @@ public class Boid : MonoBehaviour {
                 count++;
             }
 
-
         }
 
         if (count > 0)
