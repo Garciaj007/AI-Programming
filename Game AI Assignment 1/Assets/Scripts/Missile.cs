@@ -12,53 +12,73 @@ public class Missile : MonoBehaviour
     [SerializeField] private float disableHitDuration = 0.1f;
 
     private RaycastHit2D leftWallHit, rightWallHit;
-    private Rigidbody2D rigid = null;
     private bool hasHitLeft, hasHitRight, isRayDisabled;
     private float disableHitTestingTime = 0.0f;
 
-    public Player Owner { get; set; } = null;
+    private Vector2 heading = Vector2.up;
 
-    private void Start()
-    {
-        rigid = GetComponent<Rigidbody2D>();
-    }
+    public Player Owner { get; set; } = null;
 
     private void Update()
     {
-        var desired = (Enemy.Instance.transform.position - transform.position).normalized * maxSpeed;
-        var steering = desired - new Vector3(rigid.velocity.x, rigid.velocity.y);
-        steering = AvoidWalls(steering);
-        steering = Vector3.ClampMagnitude(steering, maxAngularSpeed);
-        Debug.DrawRay(transform.position, steering, Color.magenta);
-        rigid.AddForce(steering);
+        var desired = (Enemy.Instance.transform.position - transform.position).normalized;
+        PreviewRay(desired, Color.blue);
+        desired = AvoidWalls(desired);
+        PreviewRay(desired, Color.yellow);
+        var anglebetween = Mathf.Acos(Vector3.Dot(desired, heading)) * Mathf.Rad2Deg;
+        var maxAngle = maxAngularSpeed * Time.deltaTime * Mathf.Deg2Rad;
+
+        if (anglebetween <= maxAngle)
+        {
+            heading = desired.normalized;
+        }
+        else
+        {
+            var normal = Vector2.Dot(new Vector2(-heading.y, heading.x), desired);
+            if (normal < 0) maxAngle *= -1;
+
+            heading =
+                new Vector3(
+                    heading.x * Mathf.Cos(maxAngle) - heading.y * Mathf.Sin(maxAngle),
+                    heading.x * Mathf.Sin(maxAngle) + heading.y * Mathf.Cos(maxAngle))
+                    .normalized;
+        }
+
         UpdateOrientation();
+
+        transform.position += new Vector3(heading.x, heading.y) * maxSpeed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Wall") Destroy(gameObject);
+        if (other.gameObject.tag == "Wall")
+        {
+            AudioManager.Instance.PlaySound("WallHit");
+            Destroy(gameObject);
+        }
     }
 
-    private void OnDestroy()
-    {
-        Owner.HasMissile = true;
-    }
+    private void OnDestroy() => Owner.HasMissile = true;
 
-    private void UpdateOrientation()
-    {
+    private void UpdateOrientation() =>
         transform.eulerAngles = new Vector3(0, 0,
-            -Mathf.Atan2(rigid.velocity.x, rigid.velocity.y) * Mathf.Rad2Deg);
-    }
+            -Mathf.Atan2(heading.x, heading.y) * Mathf.Rad2Deg);
+
+    private void PreviewRay(Vector2 dir, Color c) => 
+        Debug.DrawRay(transform.position, dir * maxSpeed, c);
 
     private Vector3 AvoidWalls(Vector3 direction)
     {
-        if (Time.time > disableHitTestingTime + disableHitDuration)
+        if (Time.time > disableHitTestingTime + disableHitDuration && isRayDisabled)
+        {
             isRayDisabled = false;
+            Debug.Log("Enabling Ray...");
+        }
 
         hasHitLeft = hasHitRight = false;
 
-        var leftRayDirection = Quaternion.AngleAxis(-detectionAngle, Vector3.forward) * rigid.velocity.normalized;
-        var rightRayDirection = Quaternion.AngleAxis(detectionAngle, Vector3.forward) * rigid.velocity.normalized;
+        var leftRayDirection = Quaternion.AngleAxis(-detectionAngle, Vector3.forward) * heading;
+        var rightRayDirection = Quaternion.AngleAxis(detectionAngle, Vector3.forward) * heading;
 
         Debug.DrawRay(transform.position, leftRayDirection * raycastLength, Color.green);
         Debug.DrawRay(transform.position, rightRayDirection * raycastLength, Color.green);
@@ -71,21 +91,22 @@ public class Missile : MonoBehaviour
         rightWallHit = Physics2D.Raycast(origin, rightRay, raycastLength, LayerMask.GetMask("Wall"));
 
         hasHitLeft = leftWallHit.collider != null;
-        hasHitRight = rightWallHit.collider != null && !isRayDisabled;
+        hasHitRight = rightWallHit.collider != null & !isRayDisabled;
 
         if (!hasHitLeft && !hasHitRight) return direction;
 
         if (hasHitLeft && hasHitRight)
         {
+            Debug.Log("Disabling Ray...");
             isRayDisabled = true;
             disableHitTestingTime = Time.time;
         }
 
         if (hasHitLeft)
-            direction = leftWallHit.normal * maxSpeed;
+            direction = (leftWallHit.normal + heading).normalized;
 
         if (hasHitRight)
-            direction = rightWallHit.normal * maxSpeed;
+            direction = (rightWallHit.normal + heading).normalized;
 
         return direction;
     }

@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
         if (!HasMissile) return;
         var missile = Instantiate(missileObj, transform.position, Quaternion.identity);
         missile.GetComponent<Missile>().Owner = this;
+        AudioManager.Instance.PlaySound("Firing");
         GameManager.Instance.CurrentMissileInScene = missile;
         HasMissile = false;
     }

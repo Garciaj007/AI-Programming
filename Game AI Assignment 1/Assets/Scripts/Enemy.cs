@@ -59,6 +59,7 @@ public class Enemy : MonoBehaviour
         Destroy(other.gameObject);
         isDead = true;
         timeOfDeath = Time.time;
+        AudioManager.Instance.PlaySound("Explosion");
         DeathDelegate?.Invoke();
     }
 

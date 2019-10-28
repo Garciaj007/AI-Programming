@@ -118,10 +118,10 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3449768408148228399}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  m_UseAutoMass: 1
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
@@ -146,8 +146,8 @@ MonoBehaviour:
   detectionAngle: 20
   raycastLength: 2
   maxSpeed: 4
-  maxAngularSpeed: 30
-  disableHitDuration: 0.5
+  maxAngularSpeed: 90
+  disableHitDuration: 0.1
 --- !u!114 &6266062759507731419
 MonoBehaviour:
   m_ObjectHideFlags: 0
