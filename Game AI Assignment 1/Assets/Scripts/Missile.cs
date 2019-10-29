@@ -9,15 +9,20 @@ public class Missile : MonoBehaviour
     [SerializeField] private float raycastLength = 5.0f;
     [SerializeField] private float maxSpeed = 2.0f;
     [SerializeField] private float maxAngularSpeed = 90.0f;
-    [SerializeField] private float disableHitDuration = 0.1f;
+    [SerializeField] private float disableRayDuration = 0.1f;
 
     private RaycastHit2D leftWallHit, rightWallHit;
     private bool hasHitLeft, hasHitRight, isRayDisabled;
-    private float disableHitTestingTime = 0.0f;
+    private float previousTime = 0.0f;
 
     private Vector2 heading = Vector2.up;
 
     public Player Owner { get; set; } = null;
+
+    private void Start()
+    {
+        previousTime = Time.time;
+    }
 
     private void Update()
     {
@@ -69,10 +74,15 @@ public class Missile : MonoBehaviour
 
     private Vector3 AvoidWalls(Vector3 direction)
     {
-        if (Time.time > disableHitTestingTime + disableHitDuration && isRayDisabled)
+
+        if(Time.time > previousTime + disableRayDuration && isRayDisabled)
         {
             isRayDisabled = false;
-            Debug.Log("Enabling Ray...");
+        }
+
+        if (isRayDisabled)
+        {
+            return leftWallHit.normal + rightWallHit.normal + new Vector2(direction.x, direction.y).normalized;
         }
 
         hasHitLeft = hasHitRight = false;
@@ -91,22 +101,19 @@ public class Missile : MonoBehaviour
         rightWallHit = Physics2D.Raycast(origin, rightRay, raycastLength, LayerMask.GetMask("Wall"));
 
         hasHitLeft = leftWallHit.collider != null;
-        hasHitRight = rightWallHit.collider != null & !isRayDisabled;
+        hasHitRight = rightWallHit.collider != null;
 
-        if (!hasHitLeft && !hasHitRight) return direction;
-
-        if (hasHitLeft && hasHitRight)
+        if(hasHitLeft && hasHitRight)
         {
-            Debug.Log("Disabling Ray...");
             isRayDisabled = true;
-            disableHitTestingTime = Time.time;
+            previousTime = Time.time;
         }
 
         if (hasHitLeft)
-            direction = (leftWallHit.normal + heading).normalized;
+            direction = leftWallHit.normal;
 
         if (hasHitRight)
-            direction = (rightWallHit.normal + heading).normalized;
+            direction = rightWallHit.normal;
 
         return direction;
     }

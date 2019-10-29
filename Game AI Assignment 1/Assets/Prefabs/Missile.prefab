@@ -147,7 +147,7 @@ MonoBehaviour:
   raycastLength: 2
   maxSpeed: 4
   maxAngularSpeed: 90
-  disableHitDuration: 0.1
+  disableRayDuration: 0.4
 --- !u!114 &6266062759507731419
 MonoBehaviour:
   m_ObjectHideFlags: 0
