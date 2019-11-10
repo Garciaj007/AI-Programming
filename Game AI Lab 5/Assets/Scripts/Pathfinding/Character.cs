@@ -42,29 +42,22 @@ namespace Pathfinding {
 		IEnumerator SearchPathAndMove(Node target)
 		{
 			// To do: Find out a start node. The start node is the node where the character stands
-			// Node start = ?
+            Node start = map.GetNode(Mathf.FloorToInt(transform.position.x + 0.5f), Mathf.FloorToInt(transform.position.y + 0.5f));
 
+            // To do: Get the shortest path between start and target using astar algorithm
+            List<Node> path = aStarPathfinder.Search(start, target);
 
-			// To do: Get the shortest path between start and target using astar algorithm
-			// List<Node> path = ?
-
-
-
-			yield return null;
 			// To do: move the character using the position info in the shortest path
 			// you need to use "yield return new WaitForSeconds(0.5f);" to make a delay between each movement
 			// Refer to https://docs.unity3d.com/Manual/Coroutines.html
-			
+            foreach (var pos in path)
+            {
+                transform.position = new Vector3(pos.x, pos.y);
+                yield return new WaitForSeconds(0.5f);
+            }
 
-
-
-
-
-
-
-
-			// set state to IDLE in order to enable next movement
+            // set state to IDLE in order to enable next movement
 			state = State.IDLE;
-		}
+        }
 	}
 }

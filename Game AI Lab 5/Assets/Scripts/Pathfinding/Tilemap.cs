@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Pathfinding {
 	public class Tilemap : MonoBehaviour {
@@ -38,8 +39,9 @@ namespace Pathfinding {
 
 		public Node GetNode(int x, int y)
 		{
-			return nodes.Find(delegate (Node n) { return (n.x == x) && (n.y == y); });
-		}
+			Node node = nodes.Find(delegate (Node n) { return (n.x == x) && (n.y == y); });
+            return node;
+        }
 
 		public List<Node> GetNeighbors(Node node)
 		{

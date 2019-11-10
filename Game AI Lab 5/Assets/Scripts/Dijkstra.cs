@@ -33,9 +33,10 @@ public class Dijkstra : MonoBehaviour {
         
         // 3. Initialize S(visited) and Q(unvisited)
         //    S, the set of visited nodes is initially empty
-        //    Q, the queue initially conatains all nodes
+        //    Q, the queue initially contains all nodes
         // To do: Initialize visited and unvisited
-        
+        visited = new List<Node>();
+        unvisited = nodes;
 
         predecessorDict.Clear(); // to generate the result path
 		
@@ -46,7 +47,7 @@ public class Dijkstra : MonoBehaviour {
             // 4. select element of Q with the minimum distance
             // To do: Get a closest node from the unvisited list
             // Node u = ?
-            Node u = null; 
+            Node u = GetClosestFromUnvisited(); 
 
             // Check if the node u is the goal.
             if (u.IsEqual(goal)) break;
@@ -54,7 +55,7 @@ public class Dijkstra : MonoBehaviour {
             
             // 5. add u to list of S(visited)
             // To do: add u to the visited list
-            
+            visited.Add(u);
 
         	foreach(Node v in map.GetNeighbors(u))
             {
@@ -64,8 +65,8 @@ public class Dijkstra : MonoBehaviour {
                 // 6. If new shortest path found then set new value of shortest path
                 // To do: update distanceDict[v] 
                 // if dist[v] > dist[u] + w(u,v) then dist[v] = dist[u] + w(u, v)
-                
-
+                var pathDistance = distanceDict[u] + map.GetDistance(u, v);
+                if (distanceDict[v] > pathDistance) distanceDict[v] = pathDistance;
 
                 // update predecessorDict to build the result path                
                 predecessorDict[v] = u;                

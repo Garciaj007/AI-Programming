@@ -10,7 +10,7 @@ public class AStar : MonoBehaviour {
 
     Dictionary<Node, Node> predecessorDict = new Dictionary<Node, Node>();
     Dictionary<Node, float> fDistanceDict = new Dictionary<Node, float>();
-    Dictionary<Node, float> gDistanceDict = new Dictionary<Node, float>();//
+    Dictionary<Node, float> gDistanceDict = new Dictionary<Node, float>();
 
     // Use this for initialization
     void Start()
@@ -36,9 +36,10 @@ public class AStar : MonoBehaviour {
 
         // 3. Initialize S(visited) and Q(unvisited)
         //    S, the set of visited nodes is initially empty
-        //    Q, the queue initially conatains all nodes
+        //    Q, the queue initially contains all nodes
         // To do: Initialize visited and unvisited
-        
+        visited = new List<Node>();
+        unvisited = nodes;
 
         predecessorDict.Clear(); // to generate the result path
 		
@@ -49,7 +50,7 @@ public class AStar : MonoBehaviour {
             // 4. select element of Q with the minimum distance
             // To do: Get a closest node from the unvisited list
             // Node u = ?
-            Node u = null;
+            Node u = GetClosestFromUnvisited();
 
             // Check if the node u is the goal.
             if (u.IsEqual(goal)) break;
@@ -57,6 +58,7 @@ public class AStar : MonoBehaviour {
             
             // 5. add u to list of S(visited)
             // To do: add u to the visited list
+            visited.Add(u);
             
             foreach(Node v in map.GetNeighbors(u))
             {
@@ -64,15 +66,20 @@ public class AStar : MonoBehaviour {
                     continue;
 
                 // 6. If new shortest path found then set new value of shortest path
-                // To do: update fDistanceDict[v] and fDistanceDict[v]
+                // To do: update fDistanceDict[v] and gDistanceDict[v]
                 // if f_dist[v] > g_dist[u] + w(u,v) + h(v,G) then 
                 //      f_dist[v] = g_dist[u] + w(u, v) + h(v, G)
 				//		g_dist[v] = g_dist[u] + w(u, v)
 				//		update predecessorDict to build the result path
-                
+                var pathDistance = gDistanceDict[u] + map.GetDistance(u, v);
+                var estimatedDistance = GetEstimatedDistance(v, goal);
+                if (fDistanceDict[v] > pathDistance + estimatedDistance)
+                {
+                    fDistanceDict[v] = pathDistance + estimatedDistance;
+                    gDistanceDict[v] = pathDistance;
+                }
 
-
-				
+                predecessorDict[v] = u;
             }
         }
 
@@ -112,7 +119,7 @@ public class AStar : MonoBehaviour {
     {
         // To do : Calculate the estimated distance
         // The direct distance can be used as an estimated value
-        float dist = 0;
+        float dist = Vector2.Distance(new Vector2(node1.x, node1.y), new Vector2(node2.x, node2.y));
         return dist;
     }
 }

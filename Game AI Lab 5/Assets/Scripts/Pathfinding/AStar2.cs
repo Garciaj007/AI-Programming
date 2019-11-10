@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 
 namespace Pathfinding {
@@ -33,9 +34,10 @@ namespace Pathfinding {
 
 			// 3. Initialize S(visited) and Q(unvisited)
 			//    S, the set of visited nodes is initially empty
-			//    Q, the queue initially conatains all nodes
+			//    Q, the queue initially contains all nodes
         	// To do: Initialize visited and unvisited
-        
+            visited = new List<Node>();
+            unvisited = nodes;
 			
 			predecessorDict.Clear(); // to generate the result path
 			
@@ -44,13 +46,14 @@ namespace Pathfinding {
 				// 4. select element of Q with the minimum distance
             	// To do: Get a closest node from the unvisited list
             	// Node u = ?
-            	Node u = null;
+            	Node u = GetClosestFromUnvisited();
 
 				// Check if the node u is the goal.            
 				if (u == goal) break;
 							
 				// 5. add u to list of S(visited)            
             	// To do: add u to the visited list
+                visited.Add(u);
 				
 				foreach(Node v in map.GetNeighbors(u))
 				{
@@ -59,7 +62,15 @@ namespace Pathfinding {
 
 					// 6. If new shortest path found then set new value of shortest path                
 	                // To do: update fDistanceDict[v], gDistanceDict[v] and predecessorDict[v]
-	                
+                    var pathDistance = gDistanceDict[u] + map.GetNeighborDistance(u, v);
+                    var estimatedDistance = map.GetEstimatedDistance(v, goal);
+                    if (fDistanceDict[v] > pathDistance + estimatedDistance)
+                    {
+                        fDistanceDict[v] = pathDistance + estimatedDistance;
+                        gDistanceDict[v] = pathDistance;
+                    }
+
+                    predecessorDict[v] = u;
 				}
 			}
 
