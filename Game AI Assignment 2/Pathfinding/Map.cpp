@@ -44,11 +44,39 @@ void Map::CreateGraph()
 	graph = new Graph();
 
 	// To do: Complete this function.
+	for(int y = 0; y < mapSize.y; y++)
+	{
+		for(int x = 0; x < mapSize.x; x++) 
+		{
+			if(tiles[y, x] != 1)
+			{
+				Node n {{x, y}};
+				graph->AddNode(n);
+			}
+		}
+	}
 
+	for(int y = 0; y < mapSize.y; y++)
+	{
+		for(int x = 0; x < mapSize.x; x++)
+		{
+			if(tiles[y,x] != 1)
+			{
+				auto currentNode = graph->GetNode({x, y});
+				if(x + 1 < mapSize.x && tiles[y, x+1] != 1)
+					currentNode->AddEdge(graph->GetNode(Vector2(y, x + 1)));
 
+				if(x - 1 >= 0 && tiles[y, x-1] != 1)
+					currentNode->AddEdge(graph->GetNode(Vector2(y, x - 1)));
 
+				if(y + 1 < mapSize.y && tiles[y+1, x] != 1)
+					currentNode->AddEdge(graph->GetNode(Vector2(y+1, x)));
 
-
+				if(y - 1 >= 0 && tiles[y-1, x] != 1)
+					currentNode->AddEdge(graph->GetNode(Vector2(y-1, x)));
+			}
+		}
+	}
 }
 
 void Map::Render(SDL_Surface * screenSurface)

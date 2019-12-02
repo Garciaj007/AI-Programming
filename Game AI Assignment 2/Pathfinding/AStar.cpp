@@ -36,7 +36,6 @@ void AStar::OnSearchDone()
 	{
 		map->SetPathMap(p->position, Map::RESULT_PATH_FOUND); // the second param value '2' means that it will draw
 	}
-	
 }
 
 int AStar::SearchThread(void * data)
@@ -50,11 +49,57 @@ int AStar::SearchThread(void * data)
 	}
 
 	// To do: Complete this function.
+	for(auto node : astar->graph->GetAllNodes())
+	{
+		astar->distanceDict[&node] = std::numeric_limits<float>::max();
+		astar->actualDistanceDict[&node] = std::numeric_limits<float>::max();
+	}
 
+	astar->distanceDict[astar->startNode] = 0;
+	astar->actualDistanceDict[astar->startNode] = 0;
 
+	astar->visited.clear();
+	astar->predecessorDict.clear();
 
+	for(auto node : astar->graph->GetAllNodes())
+		astar->unvisited.emplace_back(&node);
 
+	while (!astar->unvisited.empty())
+	{
+		SDL_Delay(0.5f);
 
+		auto* u = astar->GetClosestFromUnvisited();
+
+		if(u == astar->goalNode) break;
+
+		astar->map->SetPathMap(u->position, Map::SEARCH_IN_PROGRESS);
+
+		astar->visited.push_back(u);
+
+		for(auto* adj : astar->graph->GetAdjacentNodes(u))
+		{
+			if(std::find(astar->visited.begin(), astar->visited.end(), adj) != astar->visited.end())
+				continue;
+
+			auto trueDistance = astar->actualDistanceDict[u] + 
+								astar->graph->GetDistance(adj, astar->goalNode);
+			if(astar->distanceDict[adj] > trueDistance)
+			{
+				astar->distanceDict[adj] = trueDistance;
+				astar->actualDistanceDict[adj] = astar->actualDistanceDict[u] + astar->graph->GetDistance(adj, u);
+				astar->predecessorDict.emplace(adj, u);
+			}
+		}
+
+		astar->pathFound.emplace_back(astar->goalNode);
+		auto* pathStart = astar->predecessorDict[astar->goalNode];
+
+		while(pathStart != astar->startNode)
+		{
+			astar->pathFound.emplace_back(pathStart);
+			pathStart = astar->predecessorDict[pathStart];
+		}
+	}
 
 	astar->OnSearchDone();
 	return 0;
@@ -62,16 +107,20 @@ int AStar::SearchThread(void * data)
 
 Node * AStar::GetClosestFromUnvisited()
 {
-
 	float shortest = std::numeric_limits<float>::max();
 	Node* shortestNode = nullptr;
 
 	// To do: Complete this function.
+	for(auto node : unvisited)
+	{
+		if(shortest > distanceDict[node])
+		{
+			shortest = distanceDict[node];
+			shortestNode = node;
+		}
+	}
 
-
-
-
-
+	unvisited.erase(std::find(unvisited.begin(), unvisited.end(), shortestNode));
 	return shortestNode;
 }
 
