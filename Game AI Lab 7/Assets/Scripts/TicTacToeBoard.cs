@@ -32,7 +32,7 @@ public class TicTacToeBoard : MonoBehaviour {
 
     void OnCellClicked(TicTacToeCell cell)
     {        
-        Debug.Log(GetCellIndex(cell));
+        //Debug.Log(GetCellIndex(cell));
      
         TicTacToe.Node node = GenerateNodeFromBoard();
         node.player = 1;        

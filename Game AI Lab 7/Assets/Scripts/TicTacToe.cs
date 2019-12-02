@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class TicTacToe {
@@ -89,7 +91,7 @@ public class TicTacToe {
         // maximizing player is (+1)
         // minimizing player is (-1)
         // To do: initialize 'alpha' with a proper value
-        int alpha = 0;
+        int alpha = -node.player * 10000;
         
         Node child = GetNextChild(node, null);        
         while (child != null)
@@ -99,9 +101,21 @@ public class TicTacToe {
 
             // To do: update the alpha value properly
             // refer to the algorithm in the lecture slide
-
+            if(node.player == 1)
+            {
+                if (score > alpha)
+                {
+                    alpha = score;
+                    selected = child;
+                }
+            }
+            else
+            {
+                if (score < alpha)
+                    alpha = score;
+            }
             // To do: remove the following line after implementing this part.
-            child = null;
+            child = GetNextChild(node, child);
         }
 
         return alpha;
@@ -164,6 +178,9 @@ public class TicTacToe {
         // O(n) is the total of opponent's possible winning lines
         int possibleWinningLinesForX = GetPossibleWinningLines(node, 2);
 
+        Debug.Log("Possible Winning Lines for X: " + possibleWinningLinesForX);
+        Debug.Log("Possible Winning Lines for O: " + possibleWinningLinesForO);
+
         return possibleWinningLinesForO - possibleWinningLinesForX;
         
     }
@@ -171,7 +188,7 @@ public class TicTacToe {
     {
         // To do : Implement this function using the GetWinningLines() function
         // This is for 7.1
-        return 0;
+        return GetWinningLines(node, ox);
     }
 
     int GetWinningLines(Node node, int ox)
@@ -232,12 +249,15 @@ public class TicTacToe {
         int value = 0;
         // To do: Implement this function
         // This is for 7.2
+        if (c1 == -1 && c2 == -1 && c3 == -1) value = 100;
+        if (c1 == 1 && c2 == 1 && c3 == 1) value = -100;
+        if (c1 == -1 && c2 == -1 && c3 == 0) value = player == -1 ? 15 : 10;
+        if (c1 == 1 && c2 == 1 && c3 == 0) value = player == 1 ? -15 : -10;
+        if (c1 == -1 && c2 == 0 && c3 == 0) value = 1;
+        if (c1 == 1 && c2 == 0 && c3 == 0) value = -1;
 
         return value;
     }
-
-
-
 
     public bool DoesGameFinish(Node node, ref ResultType result)
     {
