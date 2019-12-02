@@ -1,0 +1,48 @@
+FUNCTION_BLOCK
+
+VAR_INPUT
+	Num_Enemies	REAL; (* RANGE(0 .. 100) *)
+	Distance_Enemy	REAL; (* RANGE(0 .. 200) *) 
+END_VAR
+
+VAR_OUTPUT
+	Flame_Strength	REAL; (* RANGE(0 .. 10) *)
+END_VAR
+
+FUZZIFY Num_Enemies
+	TERM A_Few := (1, 0) (20, 1) (50, 0) ;
+	TERM Medium := (20, 0) (50, 1) (83, 0) ;
+	TERM Many := (50, 0) (83, 1) (100, 1) ;
+END_FUZZIFY
+
+FUZZIFY Distance_Enemy
+	TERM Close := (1, 0) (50, 1) (100, 0) ;
+	TERM Medium := (50, 0) (100, 1) (150, 0) ;
+	TERM Far:= (100, 0) (150, 1) (200, 1) ;
+END_FUZZIFY
+
+FUZZIFY Flame_Strength
+	TERM Low := 1 ;
+	TERM Medium := 2 ;
+	TERM High := 3 ;
+END_FUZZIFY
+
+DEFUZZIFY valve;
+	METHOD: MoM;
+END_DEFUZZIFY;
+
+RULEBLOCK first
+	AND:MIN;
+	ACCUM:MAX;
+	RULE 0: IF (Num_Enemies IS A_Few) AND (Distance_Enemy IS Close) THEN (Flame_Strength IS Medium);
+	RULE 1: IF (Num_Enemies IS A_Few) AND (Distance_Enemy IS Medium) THEN (Flame_Strength IS Low);
+	RULE 2: IF (Num_Enemies IS A_Few) AND (Distance_Enemy IS Far) THEN (Flame_Strength IS Low);
+	RULE 3: IF (Num_Enemies IS Medium) AND (Distance_Enemy IS Close) THEN (Flame_Strength IS High);
+	RULE 4: IF (Num_Enemies IS Medium) AND (Distance_Enemy IS Medium) THEN (Flame_Strength IS Medium);
+	RULE 5: IF (Num_Enemies IS Medium) AND (Distance_Enemy IS Far) THEN (Flame_Strength IS Low);
+	RULE 6: IF (Num_Enemies IS Many) AND (Distance_Enemy IS Close) THEN (Flame_Strength IS High);
+	RULE 7: IF (Num_Enemies IS Many) AND (Distance_Enemy IS Medium) THEN (Flame_Strength IS High);
+	RULE 8: IF (Num_Enemies IS Many) AND (Distance_Enemy IS Far) THEN (Flame_Strength IS Medium);
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

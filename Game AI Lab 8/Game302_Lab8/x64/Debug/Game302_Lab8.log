@@ -1,0 +1,10 @@
+﻿  stdafx.cpp
+  Game302_Lab8.cpp
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_new_model referenced in function main
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_new_child referenced in function main
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_load_fcl_file referenced in function main
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_get_msg_textA referenced in function main
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_set_value referenced in function main
+Game302_Lab8.obj : error LNK2019: unresolved external symbol ffll_get_output_value referenced in function main
+ffllapi.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Development\Unity\GameAI\AI-Programming\Game AI Lab 8\x64\Debug\Game302_Lab8.exe : fatal error LNK1120: 6 unresolved externals
