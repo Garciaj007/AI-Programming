@@ -1,0 +1,21 @@
+﻿  AStar.cpp
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(70,1): warning C4099: 'SDL_Surface': type name first seen using 'class' now seen using 'struct'
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(69): message : see declaration of 'SDL_Surface'
+  Graph.cpp
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\AStar.cpp(66,13): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\Graph.cpp(47,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\Graph.cpp(48,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\Graph.cpp(49,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\Map.h(6,18): warning C4099: 'SDL_Surface': type name first seen using 'struct' now seen using 'class'
+  Map.cpp
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(69): message : see declaration of 'SDL_Surface'
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(70,1): warning C4099: 'SDL_Surface': type name first seen using 'class' now seen using 'struct'
+  Vector2.cpp
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(69): message : see declaration of 'SDL_Surface'
+     Creating library E:\Development\Unity\AI-Programming\Game AI Assignment 2\Release\Pathfinding.lib and object E:\Development\Unity\AI-Programming\Game AI Assignment 2\Release\Pathfinding.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 484 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Pathfinding.vcxproj -> E:\Development\Unity\AI-Programming\Game AI Assignment 2\Release\Pathfinding.exe

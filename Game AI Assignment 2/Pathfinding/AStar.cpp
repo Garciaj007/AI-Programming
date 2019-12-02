@@ -23,7 +23,7 @@ void AStar::Search(Node* start, Node* goal)
 	isSearching = true;
 	startNode = start;
 	goalNode = goal;
-	
+
 	thread = SDL_CreateThread(SearchThread, "", this);
 }
 
@@ -38,7 +38,7 @@ void AStar::OnSearchDone()
 	}
 }
 
-int AStar::SearchThread(void * data)
+int AStar::SearchThread(void* data)
 {
 	AStar* astar = static_cast<AStar*>(data);
 
@@ -49,10 +49,10 @@ int AStar::SearchThread(void * data)
 	}
 
 	// To do: Complete this function.
-	for(auto node : astar->graph->GetAllNodes())
+	for (auto& node : astar->graph->GetAllNodes())
 	{
-		astar->distanceDict[&node] = std::numeric_limits<float>::max();
-		astar->actualDistanceDict[&node] = std::numeric_limits<float>::max();
+		astar->ValidateDistanceDict(&node);
+		astar->unvisited.emplace_back(&node);
 	}
 
 	astar->distanceDict[astar->startNode] = 0;
@@ -61,43 +61,30 @@ int AStar::SearchThread(void * data)
 	astar->visited.clear();
 	astar->predecessorDict.clear();
 
-	for(auto node : astar->graph->GetAllNodes())
-		astar->unvisited.emplace_back(&node);
-
 	while (!astar->unvisited.empty())
 	{
-		SDL_Delay(0.5f);
+		SDL_Delay(500.f);
+		
+		auto u = astar->GetClosestFromUnvisited();
 
-		auto* u = astar->GetClosestFromUnvisited();
-
-		if(u == astar->goalNode) break;
+		if (u == astar->goalNode) break;
 
 		astar->map->SetPathMap(u->position, Map::SEARCH_IN_PROGRESS);
 
 		astar->visited.push_back(u);
 
-		for(auto* adj : astar->graph->GetAdjacentNodes(u))
+		for (auto adj : astar->graph->GetAdjacentNodes(u))
 		{
-			if(std::find(astar->visited.begin(), astar->visited.end(), adj) != astar->visited.end())
+			if (std::find(astar->visited.begin(), astar->visited.end(), adj) != astar->visited.end())
 				continue;
 
-			auto trueDistance = astar->actualDistanceDict[u] + 
-								astar->graph->GetDistance(adj, astar->goalNode);
-			if(astar->distanceDict[adj] > trueDistance)
+			auto trueDistance = astar->actualDistanceDict[u] + astar->graph->GetDistance(u, adj) + astar->graph->GetDistance(adj, astar->goalNode);
+			if (astar->distanceDict[adj] > trueDistance)
 			{
 				astar->distanceDict[adj] = trueDistance;
-				astar->actualDistanceDict[adj] = astar->actualDistanceDict[u] + astar->graph->GetDistance(adj, u);
+				astar->actualDistanceDict[adj] = astar->actualDistanceDict[u] + astar->graph->GetDistance(u, adj);
 				astar->predecessorDict.emplace(adj, u);
 			}
-		}
-
-		astar->pathFound.emplace_back(astar->goalNode);
-		auto* pathStart = astar->predecessorDict[astar->goalNode];
-
-		while(pathStart != astar->startNode)
-		{
-			astar->pathFound.emplace_back(pathStart);
-			pathStart = astar->predecessorDict[pathStart];
 		}
 	}
 
@@ -105,15 +92,15 @@ int AStar::SearchThread(void * data)
 	return 0;
 }
 
-Node * AStar::GetClosestFromUnvisited()
+Node* AStar::GetClosestFromUnvisited()
 {
 	float shortest = std::numeric_limits<float>::max();
 	Node* shortestNode = nullptr;
 
 	// To do: Complete this function.
-	for(auto node : unvisited)
+	for (auto node : unvisited)
 	{
-		if(shortest > distanceDict[node])
+		if (shortest > distanceDict[node])
 		{
 			shortest = distanceDict[node];
 			shortestNode = node;
@@ -124,7 +111,7 @@ Node * AStar::GetClosestFromUnvisited()
 	return shortestNode;
 }
 
-void AStar::ValidateDistanceDict(Node * n)
+void AStar::ValidateDistanceDict(Node* n)
 {
 	float max = std::numeric_limits<float>::max();
 	if (distanceDict.find(n) == distanceDict.end())

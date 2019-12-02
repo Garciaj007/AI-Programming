@@ -10,6 +10,7 @@
 */[Bb]uilds/
 */[Ll]ogs/
 */[Mm]emoryCaptures/
+*/[Dd]ebug/
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
@@ -46,6 +47,15 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+*.obj
+*.pdb
+*.tlog
+*.exe
+*.exp
+*iobj
+*.ipdb
+*.lib
+*.idb
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -62,3 +72,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+Game AI Assignment 2/Assignment2_Juriel_Garcia.zip
+*.exe
+*.obj
+*.exe
+*.obj

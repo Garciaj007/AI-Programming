@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include <memory.h>
 
-
 Map::Map()
 	: startPos(-1, -1),
 	endPos(-1, -1),
@@ -44,42 +43,41 @@ void Map::CreateGraph()
 	graph = new Graph();
 
 	// To do: Complete this function.
-	for(int y = 0; y < mapSize.y; y++)
+	for (int x = 0; x < mapSize.x; x++)
 	{
-		for(int x = 0; x < mapSize.x; x++) 
+		for (int y = 0; y < mapSize.y; y++)
 		{
-			if(tiles[y, x] != 1)
-			{
-				Node n {{x, y}};
-				graph->AddNode(n);
-			}
+			Node n{ {x, y} };
+			graph->AddNode(n);
 		}
 	}
 
-	for(int y = 0; y < mapSize.y; y++)
+	for(int x = 0; x < mapSize.x; x++)
 	{
-		for(int x = 0; x < mapSize.x; x++)
+		for(int y = 0; y < mapSize.y; y++)
 		{
-			if(tiles[y,x] != 1)
-			{
-				auto currentNode = graph->GetNode({x, y});
-				if(x + 1 < mapSize.x && tiles[y, x+1] != 1)
-					currentNode->AddEdge(graph->GetNode(Vector2(y, x + 1)));
+			auto current = graph->GetNode({x, y});
+			
+			auto neighbor = graph->GetNode({x + 1, y});
+			if(neighbor && tiles[y * mapSize.x + (x + 1)] != 1)
+				current->AddEdge({neighbor, 0});
 
-				if(x - 1 >= 0 && tiles[y, x-1] != 1)
-					currentNode->AddEdge(graph->GetNode(Vector2(y, x - 1)));
+			neighbor = graph->GetNode({x - 1, y});
+			if(neighbor && tiles[y * mapSize.x + (x - 1)] != 1)
+				current->AddEdge({neighbor, 0});
 
-				if(y + 1 < mapSize.y && tiles[y+1, x] != 1)
-					currentNode->AddEdge(graph->GetNode(Vector2(y+1, x)));
+			neighbor = graph->GetNode({x, y + 1});
+			if(neighbor && tiles[(y + 1) * mapSize.x + x] != 1)
+				current->AddEdge({neighbor, 0});
 
-				if(y - 1 >= 0 && tiles[y-1, x] != 1)
-					currentNode->AddEdge(graph->GetNode(Vector2(y-1, x)));
-			}
+			neighbor = graph->GetNode({x, y - 1});
+			if(neighbor && tiles[(y - 1) * mapSize.x + x] != 1)
+				current->AddEdge({neighbor, 0});
 		}
 	}
 }
 
-void Map::Render(SDL_Surface * screenSurface)
+void Map::Render(SDL_Surface* screenSurface)
 {
 	// Draw tiles
 	for (int y = 0; y < mapSize.y; y++)
@@ -104,7 +102,7 @@ void Map::Render(SDL_Surface * screenSurface)
 				tileColor = SDL_MapRGB(screenSurface->format, 0xf0, 0xf0, 0x00); // 
 				break;
 			case RESULT_PATH_FOUND:
-				tileColor = SDL_MapRGB(screenSurface->format, 0x00, 0xF0, 0xF0); 
+				tileColor = SDL_MapRGB(screenSurface->format, 0x00, 0xF0, 0xF0);
 				break;
 			}
 
@@ -180,7 +178,7 @@ Vector2& Map::GetMapSize()
 	return mapSize;
 }
 
-void Map::DrawMarker(SDL_Surface * screenSurface, MarkType mark, Vector2 pos)
+void Map::DrawMarker(SDL_Surface* screenSurface, MarkType mark, Vector2 pos)
 {
 	SDL_Rect rect;
 	switch (mark)
@@ -210,7 +208,7 @@ Map::MarkingResult Map::TryToSetMarker()
 {
 	MarkingResult result = NONE;
 	if (tiles[cursorPos.x + cursorPos.y * mapSize.x] == 0) // marking cannot be done on walls
-	{	
+	{
 		if ((endPos.x < 0 || endPos.y < 0) && (startPos.x >= 0 && startPos.y >= 0))
 		{
 			// Set end mark
@@ -238,7 +236,7 @@ Vector2 Map::GetMarkerPosition(MarkType mark)
 		break;
 	case END:
 		ret = endPos;
-		break;	
+		break;
 	}
 
 	return ret;

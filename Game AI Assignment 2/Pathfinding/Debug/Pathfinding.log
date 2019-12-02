@@ -1,5 +1,5 @@
 ﻿  AStar.cpp
 E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(70,1): warning C4099: 'SDL_Surface': type name first seen using 'class' now seen using 'struct'
 E:\Development\Unity\AI-Programming\Game AI Assignment 2\lib\SDL2-2.0.7\include\SDL_surface.h(69): message : see declaration of 'SDL_Surface'
-E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\AStar.cpp(69,13): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
+E:\Development\Unity\AI-Programming\Game AI Assignment 2\Pathfinding\AStar.cpp(66,13): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
   Pathfinding.vcxproj -> E:\Development\Unity\AI-Programming\Game AI Assignment 2\Debug\Pathfinding.exe

@@ -11,7 +11,6 @@ class SDL_Surface;
 		enum MarkingResult { NONE, START_MARKED, END_MARKED };
 		enum MarkOnPathLayer { CLEAR, SEARCH_IN_PROGRESS, RESULT_PATH_FOUND };
 	private:
-
 		Graph* graph;
 		
 		Vector2 mapSize;
